@@ -127,6 +127,7 @@ export default class Chart extends Component {
                 <ReactTable
                     data={this.state.data}
                     columns={column1}
+                    defaultPageSize={5}
                     SubComponent={row => {
                         return (
                             <div style={{ padding: "20px" }}>
