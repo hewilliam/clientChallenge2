@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Data from '../../data/data';
 import ReactTable from 'react-table';
 import _ from 'lodash';
+import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 
 const column1 = [
     {
@@ -34,8 +35,8 @@ const column2 = [
             {
                 Header: "Status",
                 id: "status",
-                accessor: function(d) {
-                    if(d.status === true) {
+                accessor: function (d) {
+                    if (d.status === true) {
                         return "Passed!"
                     } else {
                         return "Failed!"
@@ -55,17 +56,39 @@ const column3 = [
         Header: "Screen Shot",
         accessor: "screenshot"
     },
-    // {
-    //     Header: "Launch Times",
-    //     id: "launch_times",
-    //     accessor: function(d) {
-    //         console.log(d.launch_times)
-    //         return d.launch_times.forEach(function(element){
-    //             console.log(element)
-    //             return element
-    //         })
-    //     }
-    // }
+    {
+        Header: "Launch Times",
+        id: "launch_times",
+        // accessor: function(d) {
+        //     return d.launch_times
+        // },
+        Cell: function (row) {
+            return (<Sparklines data={row.original.launch_times}>
+                <SparklinesLine color="blue" />
+                <SparklinesReferenceLine type="avg" />
+            </Sparklines>)
+        }
+    },
+    {
+        Header: "Memory",
+        id: "memory",
+        Cell: function (row) {
+            return (<Sparklines data={row.original.memory}>
+                <SparklinesLine color="red" />
+                <SparklinesReferenceLine type="avg" />
+            </Sparklines>)
+        }
+    },
+    {
+        Header: "CPU",
+        id: "cpu",
+        Cell: function (row) {
+            return (<Sparklines data={row.original.cpu}>
+                <SparklinesLine color="green" />
+                <SparklinesReferenceLine type="avg" />
+            </Sparklines>)
+        }
+    }
 ]
 
 export default class Chart extends Component {
@@ -81,7 +104,6 @@ export default class Chart extends Component {
         // console.log(this.state)
         return (
             <div>
-
                 <ReactTable
                     data={this.state.data}
                     columns={column1}
@@ -94,7 +116,7 @@ export default class Chart extends Component {
                                 <ReactTable
                                     data={this.state.data[row.index].test_cases}
                                     columns={column2}
-                                    defaultPageSize={3}
+                                    defaultPageSize={row.original.test_cases.length}
                                     showPagination={false}
                                     SubComponent={row => {
                                         return (
@@ -104,7 +126,7 @@ export default class Chart extends Component {
                                                 <ReactTable
                                                     data={this.state.data[0].test_cases[row.index].test_steps}
                                                     columns={column3}
-                                                    defaultPageSize={3}
+                                                    defaultPageSize={row.original.test_steps.length}
                                                     showPagination={false}
                                                 />
                                             </div>
