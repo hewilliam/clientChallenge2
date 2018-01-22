@@ -4,6 +4,10 @@ import ReactTable from 'react-table';
 import _ from 'lodash';
 import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 
+function average(data) {
+    return _.round(_.sum(data)/data.length)
+}
+
 const column1 = [
     {
         Header: "test.ai",
@@ -35,12 +39,21 @@ const column2 = [
             {
                 Header: "Status",
                 id: "status",
-                accessor: function (d) {
-                    if (d.status === true) {
-                        return "Passed!"
-                    } else {
-                        return "Failed!"
-                    }
+                Cell: function(row) {
+                    return (
+  
+                        <div
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: row.original.status === true ? 'green' : 'red',
+                            borderRadius: '2px',
+                            textAlign: 'center'
+                          }}
+                        >
+                        {row.original.status === true ? 'Passed! ' : 'Failed! '}
+                      </div>
+                    )
                 }
             },
         ]
@@ -54,18 +67,21 @@ const column3 = [
     },
     {
         Header: "Screen Shot",
-        accessor: "screenshot"
+        accessor: "screenshot",
+        Cell: function(row) {
+            return (<img src={`../../asset/${row.original.screenshot}`} style={{width: 100,textAlign: 'center',}}/>)
+        }
+
     },
     {
         Header: "Launch Times",
         id: "launch_times",
-        // accessor: function(d) {
-        //     return d.launch_times
-        // },
         Cell: function (row) {
-            return (<Sparklines data={row.original.launch_times}>
+            return (<Sparklines data={row.original.launch_times} height={200} width={200}>
                 <SparklinesLine color="blue" />
                 <SparklinesReferenceLine type="avg" />
+                <div>{JSON.stringify(row.original.launch_times)}</div>
+                <div>Avg: {average(row.original.launch_times)}</div>
             </Sparklines>)
         }
     },
@@ -73,9 +89,11 @@ const column3 = [
         Header: "Memory",
         id: "memory",
         Cell: function (row) {
-            return (<Sparklines data={row.original.memory}>
+            return (<Sparklines data={row.original.memory} height={200} width={200}>
                 <SparklinesLine color="red" />
                 <SparklinesReferenceLine type="avg" />
+                <div>{JSON.stringify(row.original.memory)}</div>
+                <div>Avg: {average(row.original.memory)}</div>
             </Sparklines>)
         }
     },
@@ -83,9 +101,11 @@ const column3 = [
         Header: "CPU",
         id: "cpu",
         Cell: function (row) {
-            return (<Sparklines data={row.original.cpu}>
+            return (<Sparklines data={row.original.cpu} height={200} width={200}>
                 <SparklinesLine color="green" />
                 <SparklinesReferenceLine type="avg" />
+                <div>{JSON.stringify(row.original.cpu)}</div>
+                <div>Avg: {average(row.original.cpu)}</div>
             </Sparklines>)
         }
     }
