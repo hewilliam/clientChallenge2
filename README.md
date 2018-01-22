@@ -6,4 +6,6 @@ challenge for appdiff
 ```
 > npm install
 > npm start
+
+Port: 8080
 ```
